@@ -4,68 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LuxeFinder | AI Jewellery Search</title>
+    <title>LuxeFinder | Premium AI Jewellery Search</title>
     <link rel="stylesheet" href="style.css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@300;400;500;600&display=swap"
         rel="stylesheet">
 </head>
 
 <body>
-
+    <div class="bg-decoration"></div>
     <div class="container">
         <header>
-            <div class="logo">💎 LuxeFinder</div>
-            <p class="subtitle">AI-Powered Semantic Search & Recognition</p>
+            <div class="logo-wrapper">
+                <span class="logo-icon">💎</span>
+                <h1 class="logo-text">LUXEFINDER</h1>
+            </div>
+            <p class="subtitle">Next-Generation RAG-Powered Curation</p>
         </header>
 
-        <div class="search-container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('text')">🔍 Text Search</button>
-                <button class="tab-btn" onclick="switchTab('image')">📷 Image Scan</button>
-            </div>
+        <main class="main-content">
+            <section class="search-section">
+                <div class="search-glass-card">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('text')">
+                            <span class="icon">🔍</span> Text Search
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('image')">
+                            <span class="icon">✨</span> Image Scan
+                        </button>
+                    </div>
 
-            <div id="text-panel" class="panel active">
-                <div class="input-group">
-                    <input type="text" id="query-input"
-                        placeholder="Describe it (e.g., 'Vintage gold ring with ruby')...">
-                    <select id="results-count" class="results-selector">
-                        <option value="5">5 results</option>
-                        <option value="10">10 results</option>
-                        <option value="15">15 results</option>
-                        <option value="20">20 results</option>
-                        <option value="50">50 results</option>
-                    </select>
-                    <button class="search-btn" onclick="runTextSearch()">Search</button>
+                    <div id="text-panel" class="panel active">
+                        <div class="search-bar-wrapper">
+                            <div class="input-container">
+                                <input type="text" id="query-input"
+                                    placeholder="e.g., 'Ethereal diamond necklace in white gold'...">
+                                <div class="results-config">
+                                    <label for="results-count">Show</label>
+                                    <select id="results-count">
+                                        <option value="5">05</option>
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="search-btn primary-btn" onclick="runTextSearch()">Discover</button>
+                        </div>
+                    </div>
+
+                    <div id="image-panel" class="panel">
+                        <div class="upload-area" id="drop-zone">
+                            <div class="upload-prompt">
+                                <div class="upload-icon">📸</div>
+                                <p>Drop your inspiration here or <span>browse</span></p>
+                                <p class="limit">JPEG, PNG up to 10MB</p>
+                            </div>
+                            <input type="file" id="file-input" accept="image/*" hidden>
+                        </div>
+                        <div id="preview-container" class="hidden">
+                            <div class="preview-card">
+                                <img id="image-preview" src="" alt="Preview">
+                                <div class="preview-actions">
+                                    <button class="search-btn primary-btn" onclick="runImageSearch()">Process with
+                                        AI</button>
+                                    <button class="secondary-btn" onclick="resetUpload()">Change</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <div id="image-panel" class="panel">
-                <div class="upload-box" id="drop-zone">
-                    <p>Drag & Drop or Click to Upload</p>
-                    <input type="file" id="file-input" accept="image/*" hidden>
+            <section id="loader" class="hidden">
+                <div class="loader-content">
+                    <div class="luxury-spinner"></div>
+                    <p id="loading-text">Curation in progress...</p>
                 </div>
-                <div id="preview-container" class="hidden">
-                    <img id="image-preview" src="" alt="Preview">
-                    <button class="search-btn" onclick="runImageSearch()">Analyze & Search</button>
+            </section>
+
+            <section id="ai-insight" class="hidden">
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <span class="insight-icon">🦾</span>
+                        <h3>Neural Insights</h3>
+                    </div>
+                    <div class="insight-grid">
+                        <div class="insight-item">
+                            <label>Optical Analysis (OCR)</label>
+                            <p id="ocr-result"></p>
+                        </div>
+                        <div class="insight-item">
+                            <label>Semantic Synthesis</label>
+                            <p id="vision-result"></p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div id="loader" class="hidden">
-            <div class="spinner"></div>
-            <p id="loading-text">Analyzing...</p>
-        </div>
+            <section class="results-section">
+                <div id="results-grid" class="grid"></div>
+            </section>
+        </main>
 
-        <div id="ai-insight" class="hidden">
-            <div class="insight-box">
-                <h3>🤖 AI Analysis</h3>
-                <p><strong>OCR Detected:</strong> <span id="ocr-result"></span></p>
-                <p><strong>Vision Description:</strong> <span id="vision-result"></span></p>
-            </div>
-        </div>
-
-        <div id="results-grid" class="grid"></div>
+        <footer>
+            <div class="footer-line"></div>
+            <p>&copy; 2024 LUXEFINDER. Crafted for Exquisite Collections.</p>
+        </footer>
     </div>
 
     <script src="script.js"></script>

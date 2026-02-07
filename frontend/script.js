@@ -6,38 +6,74 @@ function switchTab(mode) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
 
-    document.querySelector(`button[onclick="switchTab('${mode}')"]`).classList.add('active');
-    document.getElementById(`${mode}-panel`).classList.add('active');
+    // Updated selector for new structure
+    const activeBtn = document.querySelector(`.tab-btn[onclick="switchTab('${mode}')"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const activePanel = document.getElementById(`${mode}-panel`);
+    if (activePanel) activePanel.classList.add('active');
 }
 
 // --- FILE UPLOAD HANDLING ---
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
-dropZone.addEventListener('click', () => fileInput.click());
+if (dropZone) {
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Drag & Drop Support
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = 'var(--gold)';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.style.borderColor = '#444';
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.style.borderColor = '#444';
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect(file);
+        }
+    });
+}
 
 fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            document.getElementById('image-preview').src = e.target.result;
-            document.getElementById('drop-zone').classList.add('hidden');
-            document.getElementById('preview-container').classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-    }
+    if (file) handleFileSelect(file);
 });
 
+function handleFileSelect(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('image-preview').src = e.target.result;
+        document.getElementById('drop-zone').classList.add('hidden');
+        document.getElementById('preview-container').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+}
 
+function resetUpload() {
+    fileInput.value = "";
+    document.getElementById('image-preview').src = "";
+    document.getElementById('drop-zone').classList.remove('hidden');
+    document.getElementById('preview-container').classList.add('hidden');
+    document.getElementById('ai-insight').classList.add('hidden');
+}
 
 // --- ENTER KEY SUPPORT ---
 const queryInput = document.getElementById('query-input');
-queryInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        runTextSearch();
-    }
-});
+if (queryInput) {
+    queryInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            runTextSearch();
+        }
+    });
+}
 
 // --- API CALLS ---
 
@@ -45,7 +81,7 @@ async function runTextSearch() {
     const query = document.getElementById('query-input').value;
     if (!query) return;
 
-    showLoader(true, "Searching database...");
+    showLoader(true, "Consulting our collection...");
 
     try {
         const resultsCount = document.getElementById('results-count').value;
@@ -59,10 +95,10 @@ async function runTextSearch() {
         });
         const data = await response.json();
         renderResults(data.results);
-        document.getElementById('ai-insight').classList.add('hidden'); // Hide AI box for text search
+        document.getElementById('ai-insight').classList.add('hidden');
     } catch (error) {
         console.error(error);
-        alert("Error connecting to server. Is the backend running?");
+        alert("Connectivity issue. Please ensure the vault is accessible (backend running).");
     }
     showLoader(false);
 }
@@ -71,7 +107,7 @@ async function runImageSearch() {
     const file = fileInput.files[0];
     if (!file) return;
 
-    showLoader(true, "Scanning image with AI (OCR + Vision)...");
+    showLoader(true, "Synthesizing visual and textual data...");
 
     try {
         const resultsCount = document.getElementById('results-count').value;
@@ -86,14 +122,14 @@ async function runImageSearch() {
         const data = await response.json();
 
         // Show AI Insights
-        document.getElementById('ocr-result').innerText = data.ocr_text || "No text detected";
+        document.getElementById('ocr-result').innerText = data.ocr_text || "Undetected";
         document.getElementById('vision-result').innerText = data.analysis;
         document.getElementById('ai-insight').classList.remove('hidden');
 
         renderResults(data.results);
     } catch (error) {
         console.error(error);
-        alert("Error analyzing image.");
+        alert("Neural synthesis failed. Please try another image.");
     }
     showLoader(false);
 }
@@ -101,35 +137,42 @@ async function runImageSearch() {
 // --- UTILS ---
 function showLoader(show, text) {
     const loader = document.getElementById('loader');
-    loader.classList.toggle('hidden', !show);
-    if (text) document.getElementById('loading-text').innerText = text;
+    if (loader) {
+        loader.classList.toggle('hidden', !show);
+        if (text) document.getElementById('loading-text').innerText = text;
+    }
 }
 
 function renderResults(results) {
     const grid = document.getElementById('results-grid');
+    if (!grid) return;
+
     grid.innerHTML = "";
 
-    if (results.length === 0) {
-        grid.innerHTML = "<p style='color:#777; grid-column: 1/-1; text-align:center;'>No results found.</p>";
+    if (!results || results.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align:center; padding: 60px; color: var(--text-muted);">
+                <p style="font-size: 1.2rem; font-family: 'Playfair Display', serif;">The collection does not currently contain a match for your request.</p>
+                <p style="font-size: 0.8rem; margin-top: 10px; letter-spacing: 1px; text-transform: uppercase;">Try adjusting your description</p>
+            </div>
+        `;
         return;
     }
 
     results.forEach(item => {
-        // Calculate score percentage and color
         const scorePercent = Math.round((item.score || 0) * 100);
-        let scoreColor = '#4caf50'; // Green
-        if (scorePercent < 80) scoreColor = '#ff9800'; // Orange
-        if (scorePercent < 60) scoreColor = '#f44336'; // Red
 
         const card = `
-            <div class="card">
-                <div class="score-badge" style="background-color: ${scoreColor}">
-                    ${scorePercent}% Match
+            <div class="card" style="animation: fadeInUp 0.6s ease-out forwards;">
+                <div class="card-image-wrapper">
+                    <img src="/images/${item.image_name}" alt="${item.caption}" class="card-image" onerror="this.src='https://via.placeholder.com/400x400?text=Jewellery+Item'">
+                    <div class="score-badge">
+                        ${scorePercent}% Match
+                    </div>
                 </div>
-                <img src="/images/${item.image_name}" alt="${item.caption}" class="card-image">
                 <div class="card-body">
                     <div class="card-category">${item.category}</div>
-                    <div class="card-caption">${item.caption}</div>
+                    <h3 class="card-caption">${item.caption}</h3>
                     <div class="card-meta">
                         <span>${item.material}</span>
                         <span>${item.style}</span>
@@ -137,6 +180,6 @@ function renderResults(results) {
                 </div>
             </div>
         `;
-        grid.innerHTML += card;
+        grid.insertAdjacentHTML('beforeend', card);
     });
 }
