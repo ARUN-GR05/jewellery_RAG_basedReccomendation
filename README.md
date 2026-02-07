@@ -69,7 +69,31 @@ Access the dashboard at `http://localhost:8000`.
 
 ---
 
-## 📂 Project Structure
+## � Deployment Guides
+
+### **Deploying to Render (FastAPI)**
+1. **Create a New Web Service** on Render and connect your GitHub repository.
+2. **Environment**: Select `Python`.
+3. **Build Command**: 
+   ```bash
+   pip install -r backend/requirements.txt
+   ```
+4. **Start Command**:
+   ```bash
+   uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+   ```
+5. **Environment Variables**: Add `GPT_API_KEY` and `GPT_BASE_URL` in the "Env Vars" section.
+
+### **Deploying to Streamlit Cloud**
+If you choose to build a Streamlit-based UI (e.g., `app.py`):
+1. Push your Streamlit code to GitHub.
+2. Log in to [Streamlit Cloud](https://share.streamlit.io/) and click **"New app"**.
+3. Select your repository and the main file (e.g., `backend/app.py`).
+4. Click **"Deploy!"**
+
+---
+
+## �📂 Project Structure
 ```text
 ├── backend/
 │   ├── src/            # Core logic (OCR, Vision, Embedding, Search)
