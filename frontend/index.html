@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeFinder | AI Jewellery Search</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">💎 LuxeFinder</div>
+            <p class="subtitle">AI-Powered Semantic Search & Recognition</p>
+        </header>
+
+        <div class="search-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('text')">🔍 Text Search</button>
+                <button class="tab-btn" onclick="switchTab('image')">📷 Image Scan</button>
+            </div>
+
+            <div id="text-panel" class="panel active">
+                <div class="input-group">
+                    <input type="text" id="query-input"
+                        placeholder="Describe it (e.g., 'Vintage gold ring with ruby')...">
+                    <select id="results-count" class="results-selector">
+                        <option value="5">5 results</option>
+                        <option value="10">10 results</option>
+                        <option value="15">15 results</option>
+                        <option value="20">20 results</option>
+                        <option value="50">50 results</option>
+                    </select>
+                    <button class="search-btn" onclick="runTextSearch()">Search</button>
+                </div>
+            </div>
+
+            <div id="image-panel" class="panel">
+                <div class="upload-box" id="drop-zone">
+                    <p>Drag & Drop or Click to Upload</p>
+                    <input type="file" id="file-input" accept="image/*" hidden>
+                </div>
+                <div id="preview-container" class="hidden">
+                    <img id="image-preview" src="" alt="Preview">
+                    <button class="search-btn" onclick="runImageSearch()">Analyze & Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p id="loading-text">Analyzing...</p>
+        </div>
+
+        <div id="ai-insight" class="hidden">
+            <div class="insight-box">
+                <h3>🤖 AI Analysis</h3>
+                <p><strong>OCR Detected:</strong> <span id="ocr-result"></span></p>
+                <p><strong>Vision Description:</strong> <span id="vision-result"></span></p>
+            </div>
+        </div>
+
+        <div id="results-grid" class="grid"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
