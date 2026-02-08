@@ -92,12 +92,16 @@ async function runTextSearch() {
             method: 'POST',
             body: formData
         });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server Error (${response.status}): ${errorText}`);
+        }
         const data = await response.json();
         renderResults(data.results);
         document.getElementById('ai-insight').classList.add('hidden');
     } catch (error) {
         console.error(error);
-        alert("Connectivity issue. Please ensure the vault is accessible (backend running).");
+        alert(`Search Failed: ${error.message}\nCheck if the backend is waking up or if the URL is correct.`);
     }
     showLoader(false);
 }
@@ -118,6 +122,10 @@ async function runImageSearch() {
             method: 'POST',
             body: formData
         });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server Error (${response.status}): ${errorText}`);
+        }
         const data = await response.json();
 
         // Show AI Insights
@@ -128,7 +136,7 @@ async function runImageSearch() {
         renderResults(data.results);
     } catch (error) {
         console.error(error);
-        alert("Neural synthesis failed. Please try another image.");
+        alert(`Analysis Failed: ${error.message}`);
     }
     showLoader(false);
 }
