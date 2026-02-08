@@ -8,5 +8,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
-      - key: OPENAI_API_KEY
-        sync: false # Set this in the Render dashboard manually
+      - key: GPT_API_KEY
+        sync: false
+      - key: GPT_BASE_URL
+        value: https://apidev.navigatelabsai.com/
