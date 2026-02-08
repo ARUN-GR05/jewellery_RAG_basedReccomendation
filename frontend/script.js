@@ -1,5 +1,4 @@
-// ⚠️ CHANGE THIS TO YOUR RENDER URL AFTER DEPLOYMENT
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://jewellery-rag-basedreccomendation.onrender.com";
 
 // --- TAB SWITCHING ---
 function switchTab(mode) {
