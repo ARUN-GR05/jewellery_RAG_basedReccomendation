@@ -57,7 +57,7 @@ Items:
         prompt += "\nReturn only the ranking as a JSON array of indices (0-based), ordered from most to least relevant."
         
         response = client.chat.completions.create(
-            model="gpt-4.1-nano",  # Using available model for reranking
+            model="gpt-4o-mini",  # Using available model for reranking
             messages=[
                 {"role": "system", "content": "You are a reranking assistant. Return only valid JSON."},
                 {"role": "user", "content": prompt}

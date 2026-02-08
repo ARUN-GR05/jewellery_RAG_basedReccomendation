@@ -45,7 +45,7 @@ def analyze_image_with_text(image, detected_text):
         
         response = client.chat.completions.create(
             # Switch to available vision model
-            model="gemini-2.5-flash", 
+            model="gemini-1.5-flash", 
             messages=[
                 {"role": "user", "content": [
                     {"type": "text", "text": prompt},
