@@ -28,6 +28,13 @@ app.add_middleware(
 # Initialize search engine
 search_engine = SearchEngine()
 
+@app.get("/ping")
+async def ping():
+    """
+    Lightweight health check endpoint to wake up the server.
+    """
+    return {"status": "ok"}
+
 @app.post("/search")
 async def text_search(query: str = Form(...), top_k: int = Form(5)):
     """

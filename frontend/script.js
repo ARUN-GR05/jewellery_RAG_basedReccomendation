@@ -1,5 +1,19 @@
 const API_BASE = "https://jewellery-rag-basedreccomendation.onrender.com";
 
+// --- WARMUP PING ---
+// Render free tier sleeps after 15 mins. This wakes it up as soon as the user arrives.
+async function checkBackend() {
+    try {
+        console.log("Checking backend status...");
+        const response = await fetch(`${API_BASE}/ping`);
+        if (response.ok) {
+            console.log("Backend is awake and ready.");
+        }
+    } catch (error) {
+        console.warn("Backend is likely sleeping. Warming up...", error);
+    }
+}
+
 // --- TAB SWITCHING ---
 function switchTab(mode) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -82,6 +96,12 @@ async function runTextSearch() {
 
     showLoader(true, "Consulting our collection...");
 
+    // Set a timer to update text if it takes too long
+    const slowTimer = setTimeout(() => {
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) loadingText.innerText = "The server is waking up, please bear with us...";
+    }, 5000);
+
     try {
         const resultsCount = document.getElementById('results-count').value;
         const formData = new FormData();
@@ -101,8 +121,9 @@ async function runTextSearch() {
         document.getElementById('ai-insight').classList.add('hidden');
     } catch (error) {
         console.error(error);
-        alert(`Search Failed: ${error.message}\nCheck if the backend is waking up or if the URL is correct.`);
+        alert(`Search Failed: ${error.message}\n\nNote: If this is the first search in a while, the server might be waking up. Please try again in a few seconds.`);
     }
+    clearTimeout(slowTimer);
     showLoader(false);
 }
 
@@ -111,6 +132,11 @@ async function runImageSearch() {
     if (!file) return;
 
     showLoader(true, "Synthesizing visual and textual data...");
+
+    const slowTimer = setTimeout(() => {
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) loadingText.innerText = "Processing may take a moment while the server wakes up...";
+    }, 5000);
 
     try {
         const resultsCount = document.getElementById('results-count').value;
@@ -136,8 +162,9 @@ async function runImageSearch() {
         renderResults(data.results);
     } catch (error) {
         console.error(error);
-        alert(`Analysis Failed: ${error.message}`);
+        alert(`Analysis Failed: ${error.message}\nNote: The server might be warming up. Please try again.`);
     }
+    clearTimeout(slowTimer);
     showLoader(false);
 }
 
@@ -190,3 +217,6 @@ function renderResults(results) {
         grid.insertAdjacentHTML('beforeend', card);
     });
 }
+
+// Start warmup on page load
+checkBackend();
