@@ -2,9 +2,15 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
 venv/
 env/
 .env
+.venv
 
 # Node.js
 node_modules/
@@ -15,7 +21,16 @@ build/
 # IDEs
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
 # OS
 Thumbs.db
 .DS_Store
+
+# Project specific
+*.log
+.pytest_cache/
+.coverage
+htmlcov/

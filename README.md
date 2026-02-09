@@ -54,11 +54,19 @@ pip install -r backend/requirements.txt
 ```
 
 ### 3. Environment Configuration
-Create a `.env` file in the `backend/` directory:
-```env
-GPT_API_KEY=your_api_key_here
-GPT_BASE_URL=your_api_base_url_here
+Create a `.env` file in the `backend/` directory by copying the example:
+```bash
+cp backend/.env.example backend/.env
 ```
+
+Then edit the `.env` file and add your actual API credentials:
+```env
+GPT_API_KEY=your_actual_api_key_here
+GPT_BASE_URL=your_actual_api_base_url_here
+```
+
+> [!WARNING]
+> **Never commit your `.env` file to version control!** It contains sensitive API keys. The `.gitignore` file is already configured to exclude it.
 
 ### 4. Run the Application
 ```bash
@@ -69,7 +77,7 @@ Access the dashboard at `http://localhost:8000`.
 
 ---
 
-## � Deployment Guides
+## 🚀 Deployment Guides
 
 ### **Deploying to Render (FastAPI)**
 1. **Create a New Web Service** on Render and connect your GitHub repository.
@@ -93,7 +101,7 @@ If you choose to build a Streamlit-based UI (e.g., `app.py`):
 
 ---
 
-## �📂 Project Structure
+## 📂 Project Structure
 ```text
 ├── backend/
 │   ├── src/            # Core logic (OCR, Vision, Embedding, Search)
